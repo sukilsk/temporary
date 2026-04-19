@@ -743,6 +743,21 @@ st.markdown("""
         border-left: 4px solid #b87333 !important;
     }
 
+    /* Force Streamlit icons to render properly */
+    .material-icons, 
+    [class^="st-"] .material-icons,
+    button svg,
+    summary svg {
+        font-family: 'Material Icons' !important;
+        display: inline-block !important;
+        visibility: visible !important;
+    }
+    
+    /* Hide any raw icon text */
+    summary span:contains("arrow_down"),
+    summary span:contains("arrow_up") {
+        display: none !important;
+    }
 
 </style>
 """, unsafe_allow_html=True)
