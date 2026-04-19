@@ -952,14 +952,28 @@ def show_main_app():
                     else:
                         coffee_title = f"☕ Favorite Coffee: {coffee}"
                     
-                    with st.expander(coffee_title, expanded=True):
+                    # Custom expander to avoid font icon issues
+                    expander_key = f"expander_{idx}_{coffee.replace(' ', '_')}"
+                    expanded = st.session_state.get(expander_key, False)
+                    
+                    # Create custom expander button
+                    col_exp1, col_exp2 = st.columns([12, 1])
+                    with col_exp1:
+                        if st.button(f"{coffee_title}", key=f"btn_{idx}_{coffee.replace(' ', '_')}", use_container_width=True):
+                            st.session_state[expander_key] = not expanded
+                            st.rerun()
+                    with col_exp2:
+                        st.markdown(f"<div style='font-size: 1.5rem; text-align: center;'>{'▼' if expanded else '▶'}</div>", unsafe_allow_html=True)
+                    
+                    # Show content if expanded
+                    if expanded:
                         if flavors:
                             unique_flavors = list(dict.fromkeys(flavors))
                             
                             # Get purchase count for this coffee
                             purchase_count = get_coffee_purchase_count(st.session_state.user_id, coffee)
                             
-                            # Create the flavor profile HTML with matching style for both lines
+                            # Create the flavor profile HTML
                             flavor_html = f'''
                             <div style="margin-bottom: 1rem;">
                                 <div style="margin-bottom: 0.5rem;">
@@ -1010,7 +1024,7 @@ def show_main_app():
                                     </div>
                                     """, unsafe_allow_html=True)
                                 
-                                # Add bottom spacing to push card up (creates vertical centering)
+                                # Add bottom spacing to push card up
                                 st.markdown('<div style="height: 2rem;"></div>', unsafe_allow_html=True)
                                                 
                         with col_rec2:
@@ -1035,7 +1049,6 @@ def show_main_app():
                                     </div>
                                     """, unsafe_allow_html=True)
                                 else:
-                                    # Fallback if no flavors found
                                     st.markdown(f"""
                                     <div style="margin-bottom: 1rem;">
                                         <span style="color: #6c757d; font-size: 0.85rem; line-height: 1.4;">
@@ -1050,8 +1063,7 @@ def show_main_app():
                                     <div class="rec-card">
                                         😋 <strong>{r['food']}</strong>
                                     </div>
-                                    """, unsafe_allow_html=True)
-                        
+                                    """, unsafe_allow_html=True)                        
     
     # Footer
     st.markdown("""
